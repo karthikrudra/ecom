@@ -109,20 +109,7 @@ public class CartService {
 		return cartProductList;
 	}
 	
-//	public String payment() {
-//		Random random = new Random();
-//		int var = random.nextInt(10);
-//		System.out.println(var);
-//		if(var==9 || var == 6) {
-//			return "Payment Cancelled";
-//		} else if(var == 2 || var == 5) {
-//			return "Payment is in progress";
-//		} else {
-//			return "Payment Successful";
-//		}
-//		
-//		
-//	}
+
 	
 	public void deleteCartWhenOrderPlaced(int userId) {
 		 List<Cart> cartList = cartRepository.findCartProductIdByUserId(userId);

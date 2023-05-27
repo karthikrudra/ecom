@@ -11,8 +11,5 @@ public class AddressService {
 	@Autowired
 	AddressRepository addressRepository;
 
-	public void saveAddress() {
-
-	}
 
 }

@@ -3,6 +3,7 @@ package com.feuji.ecommerce.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,6 +12,7 @@ import com.feuji.ecommerce.dto.*;
 //import com.feuji.ecommerce.dto.Product;
 import com.feuji.ecommerce.repository.ProductRepository;
 import com.feuji.ecommerce.repository.SellerRepository;
+import com.feuji.ecommerce.util.DynamicPort;
 
 @Service
 public class ProductService {
@@ -23,6 +25,15 @@ public class ProductService {
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Value("${cartUrl}")
+	private String cartUrl;
+	
+	@Value("${orderUrl}")
+	private String orderUrl;
+	
+	@Autowired
+	private DynamicPort dynamicPort;
 
 	
 	
@@ -62,8 +73,8 @@ public class ProductService {
 			public void deleteProduct(int productId) {
 				productRepository.deleteById(productId);
 				//List<Product> productList =  productRepository.findAll();
-			    restTemplate.getForObject("http://localhost:9094/cart"+"/findcartbyproductid?productId="+productId, Cart.class);
-				restTemplate.getForObject("http://localhost:9094/order"+"/findorderbyproductid?productId="+productId, Order.class);
+			    restTemplate.getForObject(dynamicPort.getUrl(cartUrl)+"/findcartbyproductid?productId="+productId, Cart.class);
+				restTemplate.getForObject(dynamicPort.getUrl(orderUrl)+"/findorderbyproductid?productId="+productId, Order.class);
 				
 			}
 

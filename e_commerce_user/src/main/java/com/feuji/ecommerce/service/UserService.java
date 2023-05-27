@@ -63,6 +63,11 @@ public class UserService {
 		addressRepository.save(address);
 	}
 	
+	public User findUserById(int userId) {
+		User user = userRepository.findById(userId).get();
+		return user;
+	}
+	
 	
 
 

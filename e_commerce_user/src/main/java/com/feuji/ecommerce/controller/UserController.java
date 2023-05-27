@@ -1,6 +1,7 @@
 package com.feuji.ecommerce.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feuji.ecommerce.dto.RegisterAddress;
+import com.feuji.ecommerce.dto.User;
 import com.feuji.ecommerce.dto.UserAddress;
 import com.feuji.ecommerce.service.UserService;
 
@@ -46,5 +48,11 @@ public class UserController {
 	public void addAddress(@RequestBody UserAddress address,@RequestParam int userId) {
 		userService.addAddress(address,userId);
 	}
-
+	
+	@GetMapping("/userbyid") 
+	public ResponseEntity<User> findUserById(@RequestParam int userId) {
+		User user = userService.findUserById(userId);
+		return ResponseEntity.ok(user);
+	}
+ 
 }

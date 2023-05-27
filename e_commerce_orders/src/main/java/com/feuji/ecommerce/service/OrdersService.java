@@ -6,14 +6,19 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.feuji.ecommerce.dto.Order;
 import com.feuji.ecommerce.dto.Product;
 import com.feuji.ecommerce.dto.ProductOrder;
+import com.feuji.ecommerce.dto.User;
 import com.feuji.ecommerce.dto.UserAddress;
 import com.feuji.ecommerce.repository.OrdersReposotory;
+import com.feuji.ecommerce.util.DynamicPort;
 
 
 @Service
@@ -25,6 +30,21 @@ public class OrdersService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	@Autowired
+	private  SimpleMailMessage message;
+	
+	@Value("${productUrl}")
+	private String productUrl;
+	
+	@Value("${userUrl}")
+	private String userUrl;
+	
+	@Autowired
+	private DynamicPort dynamicPort;
+	
 
 //	List<UserAddress> address =  new ArrayList<>();
 	
@@ -32,7 +52,7 @@ public class OrdersService {
 		List<ProductOrder> productOrderList = new ArrayList<>();
 		List<UserAddress> userAddress = new ArrayList<>();
 		List<Order> orderList	=  ordersReposotory.findAll();
-	    Product[] products = restTemplate.getForObject("http://localhost:9050/product/findproductbysellerid?sellerId="+sellerId, Product[].class);
+	    Product[] products = restTemplate.getForObject(dynamicPort.getUrl(productUrl)+"/findproductbysellerid?sellerId="+sellerId, Product[].class);
 	    List<Product> productList = Arrays.asList(products);
 	    orderList.forEach(order -> {
 	          productList.forEach(product ->{
@@ -60,9 +80,9 @@ public class OrdersService {
 	}
 
 
-	public String saveOrders(int userid,List<ProductOrder> listProduct) {
+	public String saveOrders(int userId,List<ProductOrder> listProduct) {
 	 
-        
+        User user = restTemplate.getForObject(dynamicPort.getUrl(userUrl)+"/userbyid?userId="+userId,User.class);
 		Random random = new Random();
 		int var = random.nextInt(10);
 		System.out.println(var);
@@ -78,8 +98,13 @@ public class OrdersService {
 		    	    order.setOrderQuantity(p.getOrderQuantity());
 		    		order.setTotalPrice(p.getOrderQuantity()*p.getTotalPrice());
 		    		order.setProductSize(p.getProductSize());
-		    		order.setUserId(userid);
+		    		order.setUserId(userId);
 		    		ordersReposotory.save(order);
+		    		message.setFrom("ecommercefashio7@gmail.com");
+		    		message.setTo(user.getMailId());
+		    		message.setText("Order placed successfully , your order may be delivered within 7 days");
+		    		message.setSubject("Thanks for oderining in fashio");
+		    		mailSender.send(message);
 			    });
 			return "Payment Successful";
 		}
@@ -116,7 +141,7 @@ public class OrdersService {
 			productOrder.setUserId(order.getUserId());
 			int productId = order.getProductId();
 			System.out.println(productId);
-			Product product = restTemplate.getForObject("http://localhost:9050/product/findproductbyid?productId="+productId, Product.class);
+			Product product = restTemplate.getForObject(dynamicPort.getUrl(productUrl)+"/findproductbyid?productId="+productId, Product.class);
 			productOrder.setProductName(product.getProductName());
 			//productOrder.setBrandName(product.getBrandName());
 			productOrder.setCategory(product.getCategory());
