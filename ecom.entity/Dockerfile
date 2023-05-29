@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-alpine
+FROM openjdk:adoptopenjdk/openjdk11
 VOLUME /tmp
 ADD target/ecom-entity.jar ecom-entity.jar
 
