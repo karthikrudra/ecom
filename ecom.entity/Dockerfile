@@ -1,4 +1,4 @@
-FROM openjdk:adoptopenjdk/openjdk11
+FROM adoptopenjdk/openjdk11
 VOLUME /tmp
 ADD target/ecom-entity.jar ecom-entity.jar
 
