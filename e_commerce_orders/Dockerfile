@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:11-jdk-alpine
 VOLUME /tmp
 ADD target/e_commerce_orders.jar e_commerce_orders.jar
 
