@@ -8,9 +8,3 @@ RUN mvn clean install -DskipTests
 FROM openjdk:8-jdk-alpine
 COPY --from=build /opt/app/target/*.jar e_commerce_orders.jar
 ENTRYPOINT ["java","-jar","/e_commerce_orders.jar"]
-
-FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-ADD target/e_commerce_orders.jar e_commerce_orders.jar
-
-ENTRYPOINT ["java","-jar","e_commerce_orders.jar"]
