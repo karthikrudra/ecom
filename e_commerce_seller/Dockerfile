@@ -1,4 +1,4 @@
-FROM openjdk:adoptopenjdk/openjdk11
+FROM adoptopenjdk/openjdk11
 VOLUME /tmp
 ADD target/e_commerce_seller.jar e_commerce_seller.jar
 
